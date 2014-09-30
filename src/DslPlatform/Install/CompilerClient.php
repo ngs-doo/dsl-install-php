@@ -8,6 +8,9 @@ use Symfony\Component\Process\Process;
  */
 class CompilerClient
 {
+    const CLC_LATEST = 'https://github.com/ngs-doo/dsl-compiler-client/releases/latest';
+    const CLC_RELEASE = 'https://github.com/ngs-doo/dsl-compiler-client/releases/download/{version}/dsl-clc.jar';
+
     private $context;
 
     private $jarPath;
@@ -43,9 +46,21 @@ class CompilerClient
 
     protected function downloadClc($path)
     {
-        $this->context->write("Downloading dsl-compiler-client\n");
-        $clcUrl = $this->context->get(Config::CLC_URL);
-        if (($clcJar = file_get_contents($clcUrl)) === false)
+        $this->context->write("Downloading latest dsl-compiler-client from github.com\n");
+        $ch = curl_init(self::CLC_LATEST);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        if (!curl_exec($ch))
+            throw new \ErrorException('Error connecting to github.com');
+        $res = curl_getinfo($ch);
+        if (!isset($res['http_code']) || $res['http_code'] !== 302)
+            throw new \ErrorException('Cannot download dsl-clc.jar, unexpected HTTP code received');
+        if (!isset($res['redirect_url']))
+            throw new \ErrorException('Cannot download dsl-clc.jar, no Location header received');
+        $chunks = explode('/', $res['redirect_url']);
+        $version = array_pop($chunks);
+        $releaseUrl = str_replace('{version}', $version, self::CLC_RELEASE);
+        if (($clcJar = file_get_contents($releaseUrl)) === false)
             throw new \ErrorException('Cannot download dsl-clc.jar from ' . $clcUrl);
         if (file_put_contents($path, $clcJar) === false)
             throw new \ErrorException('Cannot write dsl-clc.jar to ' . $path);

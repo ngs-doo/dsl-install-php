@@ -15,7 +15,6 @@ class Config
     const REVENJ_PATH   = 'REVENJ_PATH';
     const PHP_URL       = 'PHP_URL';
     const CLC_PATH      = 'CLC_PATH';
-    const CLC_URL       = 'CLC_URL';
 
     private static $descriptions = array(
         self::DSL_USERNAME => 'DSL Platform username',
@@ -30,7 +29,6 @@ class Config
         self::REVENJ_PATH => 'Path to Revenj folder',
         self::PHP_URL => 'PHP Admin URL',
         self::CLC_PATH => 'Path to dsl-clc.jar',
-        self::CLC_URL => 'dsl-clc.jar download URL',
     );
 
     private $values = array();

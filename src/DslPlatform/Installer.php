@@ -62,6 +62,10 @@ class Installer
 
     public static function startRevenj($context)
     {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            echo 'Start Revenj by running: '.Config::REVENJ_PATH.'/Revenj.Http.exe';
+            return ;
+        }
         $context = self::resolveContext($context);
         $revenjUrl = $context->get(Config::REVENJ_URL);
         $context->write('Starting Revenj HTTP server at ' . $revenjUrl);

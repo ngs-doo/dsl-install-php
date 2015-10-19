@@ -61,7 +61,7 @@ class CompilerClient
         $version = array_pop($chunks);
         $releaseUrl = str_replace('{version}', $version, self::CLC_RELEASE);
         if (($clcJar = file_get_contents($releaseUrl)) === false)
-            throw new \ErrorException('Cannot download dsl-clc.jar from ' . $clcUrl);
+            throw new \ErrorException('Cannot download dsl-clc.jar from ' . $releaseUrl);
         if (file_put_contents($path, $clcJar) === false)
             throw new \ErrorException('Cannot write dsl-clc.jar to ' . $path);
     }
@@ -71,17 +71,11 @@ class CompilerClient
         $this->assertJvmVersion();
         $this->assertJarExists();
 
-        $username = $this->context->get(Config::DSL_USERNAME);
-        $password = $this->context->get(Config::DSL_PASSWORD);
         $dslPath = $this->context->get(Config::DSL_PATH);
+        $command = 'java -jar '.$this->jarPath.($login ? ' -compiler ' : '').' -dsl='.$dslPath.' '. $args;
+        $this->context->write('Running: ' . $command);
 
-        $auth = $login
-            ? sprintf(' -u="%s" -p="%s"', $username, $password)
-            : '';
-        $command = 'java -jar '.$this->jarPath.' -dsl='.$dslPath.' '. $args;
-        $this->context->write('Running: ' . $command . ' -u='.$username.' -p=[hidden]');
-
-        $process = new Process($command.$auth);
+        $process = new Process($command);
         $process->run();
         $this->context->write($process->getOutput() ?: $process->getErrorOutput());
         return true;
@@ -103,6 +97,6 @@ class CompilerClient
     {
         $db = $this->context->getDb();
         $connString = sprintf('%s:%s/%s?user=%s&password=%s', $db['server'], $db['port'], $db['database'], $db['user'], $db['password']);
-        return $this->run('-migration -apply -force -db="' . $connString . '"');
+        return $this->run('-migration -apply -force -postgres="' . $connString . '"');
     }
 }

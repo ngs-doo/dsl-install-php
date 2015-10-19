@@ -3,8 +3,6 @@ namespace DslPlatform\Install;
 
 class Config
 {
-    const DSL_USERNAME  = 'DSL_USERNAME';
-    const DSL_PASSWORD  = 'DSL_PASSWORD';
     const DSL_PATH      = 'DSL_PATH';
     const DB_DATABASE   = 'DB_DATABASE';
     const DB_USER       = 'DB_USER';
@@ -17,8 +15,6 @@ class Config
     const CLC_PATH      = 'CLC_PATH';
 
     private static $descriptions = array(
-        self::DSL_USERNAME => 'DSL Platform username',
-        self::DSL_PASSWORD => 'DSL Platform password',
         self::DSL_PATH => 'Path to DSL folder',
         self::DB_DATABASE => 'Database name',
         self::DB_USER => 'Database user',

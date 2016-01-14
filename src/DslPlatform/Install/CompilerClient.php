@@ -72,7 +72,7 @@ class CompilerClient
         $this->assertJarExists();
 
         $dslPath = $this->context->get(Config::DSL_PATH);
-        $command = 'java -jar '.$this->jarPath.($login ? ' -compiler ' : '').' -dsl='.$dslPath.' '. $args;
+        $command = 'java -jar '.$this->jarPath.' -dsl='.$dslPath.' '. $args;
         $this->context->write('Running: ' . $command);
 
         $process = new Process($command);

@@ -33,7 +33,7 @@ class Installer
         $context = self::resolveContext($context);
         $context->write('Compiling PHP and PHP_UI targets');
         $compiler = new CompilerClient($context);
-        $compiler->compile(array('php', 'php_ui'));
+        $compiler->compile(array('php_client', 'php_ui'));
     }
 
     public static function compilePhp($context)
@@ -41,7 +41,7 @@ class Installer
         $context = self::resolveContext($context);
         $context->write('Compiling PHP target');
         $compiler = new CompilerClient($context);
-        $compiler->compile('php');
+        $compiler->compile('php_client -legacy -active-record');
     }
 
     public static function compilePhpUI($context)
@@ -58,6 +58,14 @@ class Installer
         $context->write('Installing Revenj');
         $revenj = new RevenjInstaller($context);
         $revenj->setup();
+    }
+
+    public static function installRevenjJava($context)
+    {
+        $context = self::resolveContext($context);
+        $context->write('Installing Revenj');
+        $compiler = new CompilerClient($context);
+        $compiler->compile('revenj.java -jackson -namespace=test');
     }
 
     public static function startRevenj($context)
@@ -133,6 +141,8 @@ class Installer
                 break;
             }
         }
+        if ($context->askConfirmation('Install revenj.java?', true))
+            self::installRevenjJava($context);
         if ($context->askConfirmation('Install Revenj server?', true))
             self::installRevenj($context);
         if ($context->askConfirmation('Compile PHP sources?', true))

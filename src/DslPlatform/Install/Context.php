@@ -67,9 +67,8 @@ class Context
     {
         $value = $this->config->get($key);
         if ($value === null) {
-            $inputHidden = $key === Config::DSL_PASSWORD;
             $default = isset($this->defaults) ? $this->defaults->get($key) : null;
-            $value = $this->ask($this->config->getDescription($key), $default, $inputHidden);
+            $value = $this->ask($this->config->getDescription($key), $default);
             $this->config->set($key, $value);
         }
         return $value;
